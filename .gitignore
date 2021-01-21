@@ -1,0 +1,14 @@
+*
+
+!.gitignore
+!README.md
+!LICENCE
+
+!fortitude/
+!fortitude/**
+
+!tests/
+!tests/**
+
+*.pyc
+*.pyo
