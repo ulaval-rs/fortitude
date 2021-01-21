@@ -3,12 +3,13 @@
 !.gitignore
 !README.md
 !LICENCE
+!pyproject.toml
+!poetry.lock
+
+!manage.py
 
 !fortitude/
 !fortitude/**
-
-!tests/
-!tests/**
 
 *.pyc
 *.pyo
