@@ -17,17 +17,23 @@ def validate_username(username: str) -> None:
             code=status.HTTP_400_BAD_REQUEST
         )
 
+    if _contains_special_characters(username):
+        raise ValidationError(
+            detail=f'Username should not contains a special character.',
+            code=status.HTTP_400_BAD_REQUEST
+        )
+
+
+def _contains_letters(username: str) -> bool:
+    if re.match(r'[a-zA-Z]', username):
+        return True
+
+    return False
+
+
+def _contains_special_characters(username: str) -> bool:
     for char in username:
         if (char not in string.ascii_letters) and (char not in '0123456789'):
-            raise ValidationError(
-                detail=f'Username should not contains a special character.',
-                code=status.HTTP_400_BAD_REQUEST
-            )
-
-
-
-def _contains_letters(value: str) -> bool:
-    if re.match(r'[a-zA-Z]', value):
-        return True
+            return True
 
     return False
