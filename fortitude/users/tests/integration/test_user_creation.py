@@ -1,18 +1,13 @@
-from django.contrib.auth.models import User
 from django.urls import reverse
 from parameterized import parameterized
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 VALID_PASSWORD = 'A_PASSword-123!'
-VALID_USERNAME = 'aValidUsername12'
+VALID_USERNAME = 'ValidUser12'
 
 
 class TestCreateUser(APITestCase):
-
-    def setUp(self) -> None:
-        self.superuser = User.objects.create_superuser('superuser', 'super@user.com', 'superuser_password')
-        self.client.login(username='superuser', password='superuser_password')
 
     @parameterized.expand(['user', 'user12', 'a123'])
     def test_create_user(self, username):
@@ -26,16 +21,20 @@ class TestCreateUser(APITestCase):
 
 
 class TestUserCreationErrors(APITestCase):
+
     @parameterized.expand([
-        ('', b'{"username":["This field may not be blank."]}'),
-        ('aa', b'{"username":["Username should have at least 3 characters."]}'),
-        ('1234', b'{"username":["Username should contains letters."]}'),
-        ('user!', b'{"username":["Username should not contains a special character."]}'),
+        ('', VALID_PASSWORD, b'{"username":["This field may not be blank."]}'),
+        ('aa', VALID_PASSWORD, b'{"username":["Username should have at least 3 characters."]}'),
+        ('1234', VALID_PASSWORD, b'{"username":["Username should contains letters."]}'),
+        ('user!', VALID_PASSWORD, b'{"username":["Username should not contains a special character."]}'),
+        (VALID_USERNAME, '', b'{"password":["This field may not be blank."]}'),
+        (VALID_USERNAME, 'a!2', b'{"password":["This password is too short. It must contain at least 8 characters."]}'),
+        (VALID_USERNAME, 'password123', b'{"password":["This password is too common."]}'),
     ])
-    def test_create_user_with_bad_username(self, username, expected_content):
+    def test_create_user_with_bad_username_or_password(self, username, password, expected_content):
         response = self.client.post(
             reverse('user-create'),
-            {'username': username, 'password': VALID_PASSWORD},
+            {'username': username, 'password': password},
             format='json'
         )
 
