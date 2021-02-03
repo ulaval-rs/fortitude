@@ -3,6 +3,8 @@ from parameterized import parameterized
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from fortitude.users.models import User
+
 VALID_PASSWORD = 'A_PASSword-123!'
 VALID_USERNAME = 'ValidUser12'
 
@@ -18,6 +20,7 @@ class TestCreateUser(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertFalse(User.objects.get(username=username).is_active)
 
 
 class TestUserCreationErrors(APITestCase):
