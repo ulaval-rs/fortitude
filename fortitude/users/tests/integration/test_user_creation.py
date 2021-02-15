@@ -9,7 +9,7 @@ VALID_PASSWORD = 'A_PASSword-123!'
 VALID_USERNAME = 'ValidUser12'
 
 
-class TestCreateUser(APITestCase):
+class TestUserCreation(APITestCase):
 
     @parameterized.expand(['user', 'user12', 'a123'])
     def test_create_user(self, username):
