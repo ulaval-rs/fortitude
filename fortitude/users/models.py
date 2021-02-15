@@ -8,7 +8,7 @@ from .managers import UserManager
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=16, unique=True)
-    is_staff = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
 
@@ -19,3 +19,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self) -> str:
         return self.username
+
+    @property
+    def is_staff(self) -> bool:
+        return self.is_admin
