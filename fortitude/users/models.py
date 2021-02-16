@@ -8,8 +8,8 @@ from .managers import UserManager
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=16, unique=True)
-    is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
 
     USERNAME_FIELD = 'username'

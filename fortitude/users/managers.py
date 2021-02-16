@@ -9,17 +9,17 @@ class UserManager(BaseUserManager):
 
         user = self.model(username=username)
         user.set_password(password)
-        user.save(using=self._db)
+        user.save()
 
         return user
 
     def create_superuser(self, username, password):
         user = self.create_user(username, password)
 
-        user.is_active = False
+        user.is_active = True
         user.is_admin = True
         user.is_superuser = True
 
-        user.save(using=self._db)
+        user.save()
 
         return user

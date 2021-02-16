@@ -1,3 +1,5 @@
+from typing import Dict
+
 from django.contrib.auth import password_validation
 from rest_framework import serializers
 
@@ -14,3 +16,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'password')
+
+    def create(self, validated_data: Dict):
+        password = validated_data.pop('password')
+        user = super().create(validated_data)
+        user.set_password(password)
+        user.save()
+
+        return user
+
