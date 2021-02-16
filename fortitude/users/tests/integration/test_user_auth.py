@@ -6,16 +6,15 @@ from rest_framework.test import APITestCase
 
 from ...models import User
 
-PASSWORD = 'A_PASSword-123!'
 USERNAME = 'ValidUser12'
 NON_REGISTERED_USERNAME = 'NonRegisteredUser'
+PASSWORD = 'A_PASSword-123!'
 
 
 class TestUserAuth(APITestCase):
 
     def setUp(self) -> None:
-        self.user = User.objects.create(username=USERNAME)
-        self.user.set_password(PASSWORD)
+        self.user = User.objects.create_user(username=USERNAME, password=PASSWORD)
         self.user.save()
 
     def test_active_user_auth(self):
