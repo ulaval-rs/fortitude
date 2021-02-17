@@ -3,7 +3,7 @@ import unittest
 from parameterized import parameterized
 from rest_framework.exceptions import ValidationError
 
-from ... import validators
+from fortitude.users import validators
 
 
 class TestValidateUsername(unittest.TestCase):

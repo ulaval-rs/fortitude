@@ -21,6 +21,9 @@ class ForwardAPIView(APIView):
     def get(self, _: Request, instance_name: str, route: str, *__) -> Response:
         orthanc_instance = get_orthanc_instance(instance_name)
 
+        if orthanc_instance is None:
+            return Response(f'Instance {instance_name} does not exist.', status.HTTP_404_NOT_FOUND)
+
         url_to_be_called = '/'.join([orthanc_instance.address, route])
 
         if orthanc_instance.has_credentials:

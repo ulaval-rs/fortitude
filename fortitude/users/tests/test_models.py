@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from ...models import User
+from fortitude.users.models import User
 
 USERNAME = 'ValidUser12'
 PASSWORD = 'A_PASSword-123!'
