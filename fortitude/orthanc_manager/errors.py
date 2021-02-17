@@ -1,0 +1,2 @@
+class OrthancInstanceDoesNotExistError(ValueError):
+    pass
