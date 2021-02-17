@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     #
     'fortitude.users',
+    'fortitude.orthanc_manager',
 ]
 
 MIDDLEWARE = [

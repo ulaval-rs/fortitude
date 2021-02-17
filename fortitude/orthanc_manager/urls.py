@@ -1,7 +1,8 @@
-from django.urls import path
+from django.urls import path, re_path
 
-from .views import ForwardAPIView
+from .views import ForwardAPIView, OrthancInstancesAPIView
 
 urlpatterns = [
-    path('orthanc/<str:route>', ForwardAPIView.as_view(), name='user-create'),
+    path('orthanc/instances/', OrthancInstancesAPIView.as_view(), name='orthanc-list-instances'),
+    path('orthanc/instances/<str:instance_name>/<path:route>', ForwardAPIView.as_view(), name='orthanc-forward-call'),
 ]
