@@ -1,2 +1,2 @@
-class OrthancInstanceDoesNotExistError(ValueError):
+class OrthancServerDoesNotExistError(ValueError):
     pass

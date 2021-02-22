@@ -3,7 +3,7 @@ from parameterized import parameterized
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from ...models import OrthancInstance
+from ...models import OrthancServer
 
 NAME = 'NAME'
 ADDRESS = 'http://localhost:8042'
@@ -14,14 +14,14 @@ PASSWORD = 'orthanc'
 class TestForwardCall(APITestCase):
 
     def setUp(self) -> None:
-        self.orthanc_instance = OrthancInstance.objects.create(
+        self.orthanc = OrthancServer.objects.create(
             name=NAME,
             address=ADDRESS,
             has_credentials=True,
             username=USERNAME,
             password=PASSWORD
         )
-        self.orthanc_instance.save()
+        self.orthanc.save()
 
     @parameterized.expand([
         ('patients/', status.HTTP_200_OK),
@@ -33,7 +33,7 @@ class TestForwardCall(APITestCase):
     ])
     def test_forward_get_call(self, route, expected_status):
         response = self.client.get(
-            reverse('orthanc-forward-call', kwargs={'instance_name': NAME, 'route': route}),
+            reverse('orthanc-forward-call', kwargs={'server_name': NAME, 'route': route}),
             format='json'
         )
 

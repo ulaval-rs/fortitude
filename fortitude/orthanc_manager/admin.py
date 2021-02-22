@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from .models import OrthancInstance
+from .models import OrthancServer
 
-admin.site.register(OrthancInstance)
+admin.site.register(OrthancServer)

@@ -4,21 +4,21 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from ...models import OrthancInstance
+from ...models import OrthancServer
 
 NAME = 'NAME'
 ADDRESS = 'ADDRESS'
 
 
-class TestGetOrthancInstancesNames(APITestCase):
+class TestGetOrthancServersNames(APITestCase):
 
     def setUp(self) -> None:
-        self.orthanc_instance = OrthancInstance.objects.create(name=NAME, address=ADDRESS)
-        self.orthanc_instance.save()
+        self.orthanc = OrthancServer.objects.create(name=NAME, address=ADDRESS)
+        self.orthanc.save()
 
-    def test_get_instance_names(self):
+    def test_get_servers_names(self):
         response = self.client.get(
-            reverse('orthanc-instances-names'),
+            reverse('orthanc-servers-names'),
             format='json'
         )
 
