@@ -2,7 +2,7 @@ from django.db import IntegrityError
 from django.test import TestCase
 from parameterized import parameterized
 
-from fortitude.orthanc_manager.models import OrthancServer
+from ..models import OrthancServer
 
 NAME = 'NAME'
 ADDRESS = 'ADDRESS'
