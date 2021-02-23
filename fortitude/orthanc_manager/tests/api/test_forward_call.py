@@ -59,8 +59,8 @@ class TestForwardCall(TestCase):
         self.assertEqual(response.status_code, expected_status)
 
     @parameterized.expand([
-        ('instances/', status.HTTP_200_OK,),
-        ('bad_route/', status.HTTP_404_NOT_FOUND,),
+        ('instances/', status.HTTP_200_OK),
+        ('bad_route/', status.HTTP_404_NOT_FOUND),
     ])
     def test_forward_delete_call(self, route, expected_status):
         instance_id = self.given_dicom_instance_in_orthanc()
@@ -87,6 +87,8 @@ class TestForwardCall(TestCase):
         )
 
         self.assertEqual(response.status_code, expected_status)
+
+    def test_forward
 
     def given_dicom_instance_in_orthanc(self) -> str:
         """Returns the DICOM objects ID in Orthanc"""
