@@ -12,9 +12,6 @@ def forward_call_to_server(
         server_name: str,
         route: str,
         data: Optional[bytes] = None) -> requests.Response:
-    if method not in ['GET', 'POST', 'DELETE']:
-        raise ValueError(f'Method "{method}" not supported.')
-
     orthanc_server = _get_orthanc_server(server_name)
 
     url_to_be_called = f'{orthanc_server.address}/{route}'

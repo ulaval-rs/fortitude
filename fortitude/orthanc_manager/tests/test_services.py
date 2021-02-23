@@ -92,6 +92,28 @@ class TestForwardCallToServer(TestCase):
         self.assertIsInstance(result, requests.Response)
         mock_request.assert_called_with('DELETE', f'{ADDRESS}/{ROUTE}', auth=HTTPBasicAuth(USERNAME, PASSWORD), data=None)
 
+    @mock.patch('fortitude.orthanc_manager.services.requests.request')
+    def test_put_call(self, mock_request):
+        self.given_orthanc_server()
+        response = requests.Response()
+        mock_request.return_value = response
+
+        result = forward_call_to_server('PUT', SERVER_NAME, ROUTE, DATA)
+
+        self.assertIsInstance(result, requests.Response)
+        mock_request.assert_called_with('PUT', f'{ADDRESS}/{ROUTE}', data=DATA)
+
+    @mock.patch('fortitude.orthanc_manager.services.requests.request')
+    def test_put_call_with_credentials(self, mock_request):
+        self.given_orthanc_server_with_credentials()
+        response = requests.Response()
+        mock_request.return_value = response
+
+        result = forward_call_to_server('PUT', SERVER_NAME, ROUTE, DATA)
+
+        self.assertIsInstance(result, requests.Response)
+        mock_request.assert_called_with('PUT', f'{ADDRESS}/{ROUTE}', auth=HTTPBasicAuth(USERNAME, PASSWORD), data=DATA)
+
     def given_orthanc_server(self):
         OrthancServer.objects.create(name=SERVER_NAME, address=ADDRESS)
 

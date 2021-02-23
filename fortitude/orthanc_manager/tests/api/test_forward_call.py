@@ -11,6 +11,8 @@ NAME = 'NAME'
 ADDRESS = 'http://localhost:8042'
 USERNAME = 'orthanc'
 PASSWORD = 'orthanc'
+MODALITY = 'MODALITY'
+MODALITY_DATA = {'AET': 'ORTHANCC', 'Host': '127.0.0.1', 'Port': 2002}
 
 DICOM_FILE_PATH = './fortitude/orthanc_manager/tests/data/CT_small.dcm'
 
@@ -65,6 +67,19 @@ class TestForwardCall(TestCase):
 
         response = self.client.delete(
             reverse('orthanc-forward-call', kwargs={'server_name': NAME, 'route': instance_path}),
+        )
+
+        self.assertEqual(response.status_code, expected_status)
+
+    @parameterized.expand([(status.HTTP_200_OK,)])
+    def test_forward_put_call(self, expected_status):
+        response = self.client.put(
+            reverse('orthanc-forward-call', kwargs={
+                'server_name': NAME,
+                'route': f'modalities/{MODALITY}'
+            }),
+            data=MODALITY_DATA,
+            content_type='application/json'
         )
 
         self.assertEqual(response.status_code, expected_status)
