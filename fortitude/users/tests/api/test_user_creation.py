@@ -3,7 +3,7 @@ from parameterized import parameterized
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from fortitude.users.models import User
+from ...models import User
 
 VALID_PASSWORD = 'A_PASSword-123!'
 VALID_USERNAME = 'ValidUser12'

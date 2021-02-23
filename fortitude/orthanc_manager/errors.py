@@ -1,0 +1,2 @@
+class OrthancServerDoesNotExistError(ValueError):
+    pass
