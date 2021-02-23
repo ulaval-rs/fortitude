@@ -4,77 +4,114 @@ import requests
 from django.test import TestCase
 from requests.auth import HTTPBasicAuth
 
+from ..errors import OrthancServerDoesNotExistError
 from ..models import OrthancServer
-from ..services import _get_orthanc_server, get_orthanc_servers_names, forward_get_call_to_server
+from ..services import _get_orthanc_server, forward_call_to_server, get_orthanc_servers_names
 
-NAME = 'NAME'
+SERVER_NAME = 'NAME'
 ADDRESS = 'ADDRESS'
 OTHER_NAME = 'OTHER_NAME'
 OTHER_ADDRESS = 'OTHER_ADDRESS'
 ROUTE = 'patients'
 USERNAME = 'USERNAME'
 PASSWORD = 'PASSWORD'
+DATA = b'DATA'
 
 
-class TestForwardGetCallToInstance(TestCase):
+class TestForwardCallToServer(TestCase):
 
-    @mock.patch('fortitude.orthanc_manager.services.requests.get')
-    def test_forward_get_call_to_instance(self, mock_get):
-        OrthancServer.objects.create(name=NAME, address=ADDRESS)
+    @mock.patch('fortitude.orthanc_manager.services.requests.request')
+    def test_get_call(self, mock_request):
+        OrthancServer.objects.create(name=SERVER_NAME, address=ADDRESS)
         response = requests.Response()
-        mock_get.return_value = response
+        mock_request.return_value = response
 
-        result = forward_get_call_to_server(NAME, ROUTE)
+        result = forward_call_to_server('GET', SERVER_NAME, ROUTE)
 
         self.assertIsInstance(result, requests.Response)
-        mock_get.assert_called_with(f'{ADDRESS}/{ROUTE}')
+        mock_request.assert_called_with('GET', f'{ADDRESS}/{ROUTE}', data=None)
 
-    @mock.patch('fortitude.orthanc_manager.services.requests.get')
-    def test_forward_get_call_to_instance_with_credentials(self, mock_get):
+    @mock.patch('fortitude.orthanc_manager.services.requests.request')
+    def test_get_call_with_credentials(self, mock_request):
         OrthancServer.objects.create(
-            name=NAME,
+            name=SERVER_NAME,
             address=ADDRESS,
             has_credentials=True,
             username=USERNAME,
             password=PASSWORD
         )
         response = requests.Response()
-        mock_get.return_value = response
+        mock_request.return_value = response
 
-        result = forward_get_call_to_server(NAME, ROUTE)
+        result = forward_call_to_server('GET', SERVER_NAME, ROUTE)
 
         self.assertIsInstance(result, requests.Response)
-        mock_get.assert_called_with(f'{ADDRESS}/{ROUTE}', auth=HTTPBasicAuth(USERNAME, PASSWORD))
+        mock_request.assert_called_with('GET', f'{ADDRESS}/{ROUTE}', auth=HTTPBasicAuth(USERNAME, PASSWORD), data=None)
+
+    @mock.patch('fortitude.orthanc_manager.services.requests.request')
+    def test_post_call(self, mock_request):
+        self.given_orthanc_server()
+        response = requests.Response()
+        mock_request.return_value = response
+
+        result = forward_call_to_server('POST', SERVER_NAME, ROUTE, DATA)
+
+        self.assertIsInstance(result, requests.Response)
+        mock_request.assert_called_with('POST', f'{ADDRESS}/{ROUTE}', data=DATA)
+
+    @mock.patch('fortitude.orthanc_manager.services.requests.request')
+    def test_post_call_with_credentials(self, mock_request):
+        self.given_orthanc_server_with_credentials()
+        response = requests.Response()
+        mock_request.return_value = response
+
+        result = forward_call_to_server('POST', SERVER_NAME, ROUTE)
+
+        self.assertIsInstance(result, requests.Response)
+        mock_request.assert_called_with('POST', f'{ADDRESS}/{ROUTE}', auth=HTTPBasicAuth(USERNAME, PASSWORD), data=None)
+
+    def given_orthanc_server(self):
+        OrthancServer.objects.create(name=SERVER_NAME, address=ADDRESS)
+
+    def given_orthanc_server_with_credentials(self):
+        OrthancServer.objects.create(
+            name=SERVER_NAME,
+            address=ADDRESS,
+            has_credentials=True,
+            username=USERNAME,
+            password=PASSWORD
+        )
 
 
-class TestGetOrthancInstancesNames(TestCase):
+class TestGetOrthancServersNames(TestCase):
 
-    def test_get_instance_names(self):
-        OrthancServer.objects.create(name=NAME, address=ADDRESS)
+    def test_get_servers_names(self):
+        OrthancServer.objects.create(name=SERVER_NAME, address=ADDRESS)
         OrthancServer.objects.create(name=OTHER_NAME, address=OTHER_ADDRESS)
 
         result = get_orthanc_servers_names()
 
-        self.assertCountEqual(result, [NAME, OTHER_NAME])
+        self.assertCountEqual(result, [SERVER_NAME, OTHER_NAME])
 
-    def test_get_instances_names_when_no_instance(self):
+    def test_get_servers_names_when_no_server(self):
         result = get_orthanc_servers_names()
 
         self.assertEqual(result, [])
 
 
-class TestGetOrthancInstance(TestCase):
+class TestGetOrthancServer(TestCase):
 
-    def test_get_instance(self):
-        OrthancServer.objects.create(name=NAME, address=ADDRESS)
+    def test_get_server(self):
+        OrthancServer.objects.create(name=SERVER_NAME, address=ADDRESS)
 
-        result = _get_orthanc_server(NAME)
+        result = _get_orthanc_server(SERVER_NAME)
 
         self.assertIsInstance(result, OrthancServer)
-        self.assertEqual(result.name, NAME)
+        self.assertEqual(result.name, SERVER_NAME)
         self.assertEqual(result.address, ADDRESS)
 
-    def test_get_non_existing_instance(self):
-        result = _get_orthanc_server(OTHER_NAME)
-
-        self.assertIsNone(result)
+    def test_get_non_existing_server(self):
+        self.assertRaises(
+            OrthancServerDoesNotExistError,
+            lambda: _get_orthanc_server(OTHER_NAME)
+        )

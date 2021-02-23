@@ -7,20 +7,24 @@ from .errors import OrthancServerDoesNotExistError
 from .models import OrthancServer
 
 
-def forward_get_call_to_server(server_name: str, route: str) -> requests.Response:
-    orthanc_server = _get_orthanc_server(server_name)
+def forward_call_to_server(
+        method: str,
+        server_name: str,
+        route: str,
+        data: Optional[bytes] = None) -> requests.Response:
+    if method not in ['GET', 'POST']:
+        raise ValueError(f'Method "{method}" not supported.')
 
-    if orthanc_server is None:
-        raise OrthancServerDoesNotExistError()
+    orthanc_server = _get_orthanc_server(server_name)
 
     url_to_be_called = f'{orthanc_server.address}/{route}'
 
     if orthanc_server.has_credentials:
         credentials = HTTPBasicAuth(orthanc_server.username, orthanc_server.password)
 
-        return requests.get(url_to_be_called, auth=credentials)
+        return requests.request(method, url_to_be_called, auth=credentials, data=data)
 
-    return requests.get(url_to_be_called)
+    return requests.request(method, url_to_be_called, data=data)
 
 
 def get_orthanc_servers_names() -> List[str]:
@@ -30,8 +34,8 @@ def get_orthanc_servers_names() -> List[str]:
     return servers_names
 
 
-def _get_orthanc_server(name: str) -> Optional[OrthancServer]:
+def _get_orthanc_server(name: str) -> OrthancServer:
     if OrthancServer.objects.filter(name=name).exists():
         return OrthancServer.objects.get(name=name)
 
-    return None
+    raise OrthancServerDoesNotExistError()
