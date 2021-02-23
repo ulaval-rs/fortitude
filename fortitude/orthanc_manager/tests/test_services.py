@@ -65,10 +65,32 @@ class TestForwardCallToServer(TestCase):
         response = requests.Response()
         mock_request.return_value = response
 
-        result = forward_call_to_server('POST', SERVER_NAME, ROUTE)
+        result = forward_call_to_server('POST', SERVER_NAME, ROUTE, DATA)
 
         self.assertIsInstance(result, requests.Response)
-        mock_request.assert_called_with('POST', f'{ADDRESS}/{ROUTE}', auth=HTTPBasicAuth(USERNAME, PASSWORD), data=None)
+        mock_request.assert_called_with('POST', f'{ADDRESS}/{ROUTE}', auth=HTTPBasicAuth(USERNAME, PASSWORD), data=DATA)
+
+    @mock.patch('fortitude.orthanc_manager.services.requests.request')
+    def test_delete_call(self, mock_request):
+        self.given_orthanc_server()
+        response = requests.Response()
+        mock_request.return_value = response
+
+        result = forward_call_to_server('DELETE', SERVER_NAME, ROUTE)
+
+        self.assertIsInstance(result, requests.Response)
+        mock_request.assert_called_with('DELETE', f'{ADDRESS}/{ROUTE}', data=None)
+
+    @mock.patch('fortitude.orthanc_manager.services.requests.request')
+    def test_delete_call_with_credentials(self, mock_request):
+        self.given_orthanc_server_with_credentials()
+        response = requests.Response()
+        mock_request.return_value = response
+
+        result = forward_call_to_server('DELETE', SERVER_NAME, ROUTE)
+
+        self.assertIsInstance(result, requests.Response)
+        mock_request.assert_called_with('DELETE', f'{ADDRESS}/{ROUTE}', auth=HTTPBasicAuth(USERNAME, PASSWORD), data=None)
 
     def given_orthanc_server(self):
         OrthancServer.objects.create(name=SERVER_NAME, address=ADDRESS)

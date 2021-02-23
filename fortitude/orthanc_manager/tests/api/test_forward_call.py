@@ -59,11 +59,21 @@ class TestForwardCall(TestCase):
 
         self.assertEqual(response.status_code, expected_status)
 
+    @parameterized.expand([(status.HTTP_200_OK,)])
+    def test_forward_delete_call(self, expected_status):
+        instance_path = self.given_dicom_instance_in_orthanc()
+
+        response = self.client.delete(
+            reverse('orthanc-forward-call', kwargs={'server_name': NAME, 'route': instance_path}),
+        )
+
+        self.assertEqual(response.status_code, expected_status)
+
     def given_dicom_data(self) -> bytes:
         with open(DICOM_FILE_PATH, 'rb') as file:
             return file.read()
 
-    def upload_dicom_instance(self) -> str:
+    def given_dicom_instance_in_orthanc(self) -> str:
         """Returns the DICOM objects id path in Orthanc"""
         dicom_data = self.given_dicom_data()
 

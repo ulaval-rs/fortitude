@@ -34,3 +34,12 @@ class ForwardAPIView(APIView):
             return Response(f'Server {server_name} does not exist.', status.HTTP_404_NOT_FOUND)
 
         return Response(response.content, response.status_code)
+
+    def delete(self, _: Request, server_name: str, route: str, *__) -> Response:
+        try:
+            response = forward_call_to_server('DELETE', server_name, route)
+
+        except OrthancServerDoesNotExistError:
+            return Response(f'Server {server_name} does not exist.', status.HTTP_404_NOT_FOUND)
+
+        return Response(response.content, response.status_code)
