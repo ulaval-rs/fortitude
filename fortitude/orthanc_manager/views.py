@@ -17,36 +17,21 @@ class OrthancServersAPIView(APIView):
 
 class ForwardAPIView(APIView):
 
-    def get(self, _: Request, server_name: str, route: str, *__) -> Response:
-        try:
-            response = forward_call_to_server('GET', server_name, route)
-
-        except OrthancServerDoesNotExistError:
-            return Response(f'Server {server_name} does not exist.', status.HTTP_404_NOT_FOUND)
-
-        return Response(response.content, response.status_code)
+    def get(self, request: Request, server_name: str, route: str, *__) -> Response:
+        return self._forward_call('GET', request, server_name, route)
 
     def post(self, request: Request, server_name: str, route: str, *__) -> Response:
-        try:
-            response = forward_call_to_server('POST', server_name, route, data=request.body)
+        return self._forward_call('POST', request, server_name, route)
 
-        except OrthancServerDoesNotExistError:
-            return Response(f'Server {server_name} does not exist.', status.HTTP_404_NOT_FOUND)
-
-        return Response(response.content, response.status_code)
-
-    def delete(self, _: Request, server_name: str, route: str, *__) -> Response:
-        try:
-            response = forward_call_to_server('DELETE', server_name, route)
-
-        except OrthancServerDoesNotExistError:
-            return Response(f'Server {server_name} does not exist.', status.HTTP_404_NOT_FOUND)
-
-        return Response(response.content, response.status_code)
+    def delete(self, request: Request, server_name: str, route: str, *__) -> Response:
+        return self._forward_call('DELETE', request, server_name, route)
 
     def put(self, request: Request, server_name: str, route: str, *__) -> Response:
+        return self._forward_call('PUT', request, server_name, route)
+
+    def _forward_call(self, method: str, request: Request, server_name: str, route: str, *__) -> Response:
         try:
-            response = forward_call_to_server('PUT', server_name, route, data=request.body)
+            response = forward_call_to_server(method, server_name, route, data=request.body)
 
         except OrthancServerDoesNotExistError:
             return Response(f'Server {server_name} does not exist.', status.HTTP_404_NOT_FOUND)

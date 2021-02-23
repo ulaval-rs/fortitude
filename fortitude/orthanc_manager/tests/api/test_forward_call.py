@@ -88,8 +88,6 @@ class TestForwardCall(TestCase):
 
         self.assertEqual(response.status_code, expected_status)
 
-    def test_forward
-
     def given_dicom_instance_in_orthanc(self) -> str:
         """Returns the DICOM objects ID in Orthanc"""
         dicom_data = make_dicom_data()
