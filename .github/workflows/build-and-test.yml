@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  orthanc-setup:
+  build:
     runs-on: ubuntu-latest
     services:
       orthanc:
@@ -15,8 +15,6 @@ jobs:
         ports:
           - 8042:8042
           - 4242:4242
-  build:
-    runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
