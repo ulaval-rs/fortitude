@@ -11,5 +11,8 @@
 !fortitude/
 !fortitude/**
 
+!.github/
+!.github/**
+
 *.pyc
 *.pyo
