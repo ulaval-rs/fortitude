@@ -13,13 +13,14 @@ OTHER_ADDRESS = 'OTHER_ADDRESS'
 class TestOrthancServer(TestCase):
 
     def test_defaults(self):
-        orthanc_server = OrthancServer.objects.create(name=NAME, address=ADDRESS)
+        server = OrthancServer.objects.create(name=NAME, address=ADDRESS)
 
-        self.assertEqual(orthanc_server.name, NAME)
-        self.assertEqual(orthanc_server.address, ADDRESS)
-        self.assertFalse(orthanc_server.has_credentials)
-        self.assertEqual(orthanc_server.username, '')
-        self.assertEqual(orthanc_server.password, '')
+        self.assertEqual(server.name, NAME)
+        self.assertEqual(server.address, ADDRESS)
+        self.assertFalse(server.has_credentials)
+        self.assertEqual(server.username, '')
+        self.assertEqual(server.password, '')
+        self.assertTrue(server.is_restricted)
 
     @parameterized.expand([
         (NAME, ADDRESS, NAME, OTHER_ADDRESS),

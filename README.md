@@ -23,13 +23,6 @@ The project is under development, and therefore should not be used.
 - [x] Activate User (through Django admin)
 - [ ] User change password
 
-### Permissions Group
-
-- [ ] Create new group
-- [ ] Add User to group
-- [ ] Dedicate a group per Orthanc server instance
-- [ ] Dedicate a group per DICOMWeb server instance
-
 ### Audit
 
 - [ ] Trace which user called which route in logs
@@ -43,6 +36,8 @@ The project is under development, and therefore should not be used.
 - [x] Forward a POST call to an Orthanc server (POST `orthanc/servers/<server_name>/<orthanc_route_to_call>`)
 - [x] Forward a DELETE call to an Orthanc server (DELETE `orthanc/servers/<server_name>/<orthanc_route_to_call>`)
 - [x] Forward a PUT call to an Orthanc server (PUT `orthanc/servers/<server_name>/<orthanc_route_to_call>`)
+- [x] Restrict access to Orthanc server (through the Django admin)
+- [x] Give access per user to Orthanc server (through the Django admin)
 - [ ] Configure modalities of an Orthanc server (through the Django admin)
 
 ### DICOMWeb support
@@ -54,3 +49,11 @@ The project is under development, and therefore should not be used.
 - [ ] Forward a POST call to a DICOMWeb server (POST `dicomweb/servers/<server_name>/<dicomweb_route_to_call>`)
 - [ ] Forward a DELETE call to a DICOMWeb server (DELETE `dicomweb/servers/<server_name>/<dicomweb_route_to_call>`)
 - [ ] Forward a PUT call to a DICOMWeb server (PUT `dicomweb/servers/<server_name>/<dicomweb_route_to_call>`)
+- [ ] Restrict access to DICOMWeb server (through the Django admin)
+- [ ] Give access per user to DICOMWeb server (through the Django admin)
+
+
+### Other
+- [ ] Async forward calls
+- [ ] Dockerize the application
+- [ ] Make the app installable through PyPi

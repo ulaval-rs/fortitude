@@ -18,8 +18,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self) -> str:
-        return self.username
+        return str(self.username)
 
     @property
     def is_staff(self) -> bool:
-        return self.is_admin
+        return bool(self.is_admin)

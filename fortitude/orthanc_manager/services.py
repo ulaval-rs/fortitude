@@ -3,16 +3,18 @@ from typing import List, Optional
 import requests
 from requests.auth import HTTPBasicAuth
 
-from .errors import OrthancServerDoesNotExistError
+from fortitude.users.models import User
+from .errors import OrthancServerDoesNotExistError, UnAuthorizedError
 from .models import OrthancServer
 
 
 def forward_call_to_server(
+        user: User,
         method: str,
         server_name: str,
         route: str,
         data: Optional[bytes] = None) -> requests.Response:
-    orthanc_server = _get_orthanc_server(server_name)
+    orthanc_server = _get_orthanc_server(server_name, user)
 
     url_to_be_called = f'{orthanc_server.address}/{route}'
 
@@ -31,8 +33,20 @@ def get_orthanc_servers_names() -> List[str]:
     return servers_names
 
 
-def _get_orthanc_server(name: str) -> OrthancServer:
+def _get_orthanc_server(name: str, user: User) -> OrthancServer:
     if OrthancServer.objects.filter(name=name).exists():
-        return OrthancServer.objects.get(name=name)
+        server = OrthancServer.objects.get(name=name)
+
+        if not server.is_restricted:
+            return server
+
+        if _does_user_is_authorized_to_server(user, server):
+            return server
+
+        raise UnAuthorizedError()
 
     raise OrthancServerDoesNotExistError()
+
+
+def _does_user_is_authorized_to_server(user: User, server: OrthancServer) -> bool:
+    return user in server.authorized_users.all()

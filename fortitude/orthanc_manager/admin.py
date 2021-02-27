@@ -13,11 +13,18 @@ class OrthancServerAdmin(admin.ModelAdmin):
                 'has_credentials',
                 'username',
                 'password',
-            )
+            ),
+        }),
+        ('Authorization', {
+            'fields': (
+                'is_restricted',
+                'authorized_users',
+            ),
         }),
     )
     search_fields = ('name',)
     ordering = ('name',)
+    filter_horizontal = ('authorized_users',)
 
 
 admin.site.register(OrthancServer, OrthancServerAdmin)
