@@ -14,7 +14,7 @@ def forward_call_to_server(
         server_name: str,
         route: str,
         data: Optional[bytes] = None) -> requests.Response:
-    orthanc_server = _get_orthanc_server(server_name, user)
+    orthanc_server = get_orthanc_server(server_name, user)
 
     url_to_be_called = f'{orthanc_server.address}/{route}'
 
@@ -33,7 +33,7 @@ def get_orthanc_servers_names() -> List[str]:
     return servers_names
 
 
-def _get_orthanc_server(name: str, user: User) -> OrthancServer:
+def get_orthanc_server(name: str, user: User) -> OrthancServer:
     if OrthancServer.objects.filter(name=name).exists():
         server = OrthancServer.objects.get(name=name)
 

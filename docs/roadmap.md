@@ -29,7 +29,7 @@
 - [x] Add new Orthanc server connection (through Django admin)
 - [x] Delete an Orthanc instance connection (through Django admin)
 - [x] Get the list of configured Orthanc servers (GET `orthanc/servers/`)
-- [ ] Get information about the Orthanc server (GET `orthanc/servers/<server_name>`)
+- [x] Get information about the Orthanc server (GET `orthanc/servers/<server_name>`)
 - [x] Forward a GET call to an Orthanc server (GET `orthanc/servers/<server_name>/<orthanc_route_to_call>`)
 - [x] Forward a POST call to an Orthanc server (POST `orthanc/servers/<server_name>/<orthanc_route_to_call>`)
 - [x] Forward a DELETE call to an Orthanc server (DELETE `orthanc/servers/<server_name>/<orthanc_route_to_call>`)
