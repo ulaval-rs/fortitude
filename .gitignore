@@ -11,6 +11,9 @@
 !fortitude/
 !fortitude/**
 
+!docs/
+!docs/**
+
 !.github/
 !.github/**
 
