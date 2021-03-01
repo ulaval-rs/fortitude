@@ -6,7 +6,7 @@ from requests.auth import HTTPBasicAuth
 
 from ..errors import OrthancServerDoesNotExistError, UnAuthorizedError
 from ..models import OrthancServer
-from ..services import _get_orthanc_server, forward_call_to_server, get_orthanc_servers_names
+from ..services import get_orthanc_server, forward_call_to_server, get_orthanc_servers_names
 from ...users.models import User
 
 SERVER_NAME = 'NAME'
@@ -153,7 +153,7 @@ class TestGetOrthancServer(TestCase):
     def test_get_server_with_authorized_user(self):
         self.server.authorized_users.add(self.user)
 
-        result = _get_orthanc_server(self.server.name, self.user)
+        result = get_orthanc_server(self.server.name, self.user)
 
         self.assertIsInstance(result, OrthancServer)
         self.assertEqual(result.name, SERVER_NAME)
@@ -163,7 +163,7 @@ class TestGetOrthancServer(TestCase):
         self.server.is_restricted = False
         self.server.save()
 
-        result = _get_orthanc_server(self.server.name, self.user)
+        result = get_orthanc_server(self.server.name, self.user)
 
         self.assertIsInstance(result, OrthancServer)
         self.assertEqual(result.name, SERVER_NAME)
@@ -172,11 +172,11 @@ class TestGetOrthancServer(TestCase):
     def test_get_server_with_unauthorized_user(self):
         self.assertRaises(
             UnAuthorizedError,
-            lambda: _get_orthanc_server(self.server.name, self.user)
+            lambda: get_orthanc_server(self.server.name, self.user)
         )
 
     def test_get_non_existing_server(self):
         self.assertRaises(
             OrthancServerDoesNotExistError,
-            lambda: _get_orthanc_server(OTHER_NAME, self.user)
+            lambda: get_orthanc_server(OTHER_NAME, self.user)
         )
